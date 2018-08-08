@@ -21,17 +21,6 @@ smarried(marge,homer).
 married(X,Y) :- smarried(X,Y).
 married(X,Y) :- smarried(Y,X).
 
-sibling(marge,patty).
-sibling(marge,selma).
-sibling(patty,selma).
-sibling(bart,maggie).
-sibling(bart,lisa).
-sibling(lisa,maggie).
-sibling(herb,homer).
-
-siblings(X,Y)   :- sibling(X,Y).
-siblings(X,Y)   :- sibling(Y,X).
-
 parent(marge,bart).
 parent(marge,lisa).
 parent(marge,maggie).
@@ -69,7 +58,7 @@ isFather(X) :- child(_,X),male(X).
   % X = jackie .
   % Define a predicate sibling/2. Siblings share at least one parent.
 
-grandparent(abe,X) :- child(abe,parent(_,X)).
+grandparent(X,Y) :- parent(X,Z),parent(Z,Y).
   
   % ?- sibling(homer,X).
   % X = herb .
@@ -78,14 +67,15 @@ grandparent(abe,X) :- child(abe,parent(_,X)).
   % X = bart ;
   % X = maggie .
   % Define two predicates brother/2 and sister/2.
-  
+sibling(X,Y) :- parent(Z,X),parent(Z,Y), X \= Y.  
+
   % ?- sister(lisa,X).
   % X = bart ;
   % X = maggie .
-  
+
   % ?- sister(X,lisa).
   % X = maggie .
-  
+sister(X,Y) :- sibling(X,Y),female(X).
   % ?- brother(bart,X).
   % X = lisa ;
   % X = maggie .
@@ -93,7 +83,7 @@ grandparent(abe,X) :- child(abe,parent(_,X)).
   % ?- brother(X,bart).
   % false.
   % Define a predicate siblingInLaw/2. A sibling-in-law is either married to a sibling or the sibling of a spouse.
-  
+brother(X,Y) :- sibling(X,Y),male(X).
   % ?- siblingInLaw(selma,X).
   % X = homer .
   
@@ -103,6 +93,10 @@ grandparent(abe,X) :- child(abe,parent(_,X)).
   % ?- siblingInLaw(X,homer).
   % X = patty ;
   % X = selma .
+
+siblingInLaw(X,Y) :- sibling(Z,Y),married(X,Z).
+siblingInLaw(X,Y) :- sibling(X,Z),married(Z,Y).
+
   % Define two predicates aunt/2 and uncle/2. Your definitions of these predicates should include aunts and uncles by marriage.
   
   % ?- aunt(patty,X).
@@ -110,11 +104,13 @@ grandparent(abe,X) :- child(abe,parent(_,X)).
   % X = lisa ;
   % X = maggie ;
   % X = ling .
-  
+aunt(X,Y) :- (sibling(X,Z);siblingInLaw(X,Z)),parent(Z,Y),female(X).
+
+
   % ?- uncle(X,ling).
   % X = homer .
+uncle(X,Y) :- (sibling(X,Z);siblingInLaw(X,Z)),parent(Z,Y),male(X).  
   % Define the predicate cousin/2.
-  
   % ?- cousin(maggie,X).
   % X = ling .
   
@@ -122,6 +118,7 @@ grandparent(abe,X) :- child(abe,parent(_,X)).
   % X = bart ;
   % X = lisa ;
   % X = maggie .
+cousin(X,Y) :- child(X,Z), sibling(Z,W), parent(W,Y).
   % Define the predicate ancestor/2.
   
   % ?- ancestor(abe,X).
@@ -138,10 +135,27 @@ grandparent(abe,X) :- child(abe,parent(_,X)).
   % X = mona ;
   % X = clancy ;
   % X = jackie .
+
+ancestor(X,Y) :- parent(X,Y);
+                (parent(X,Z),parent(Z,Y)).
+                    
+
   % Extra Credit: Define the predicate related/2. This predicate should be true for any two people connected by a family tree, no matter how distantly. Therefore, a query such as related(herb,X) should enumerate every other person in the tree.
   
   % The challenge in this problem is structuring your predicate in a way that enumerates all members of the tree and doesn’t infinitely loop. You may want to use a helper predicate.
   
   % (Note: my solution does not infinitely loop, but also never stops finding solutions. If someone can produce a better implementation, bonus bonus points!)
-  
-  
+related(X, Y) :- ancestor(X, Y).
+related(X, Y) :- ancestor(Y, X).
+related(X, Y) :- cousin(X, Y).
+related(X, Y) :- cousin(Y, X).
+related(X, Y) :- aunt(X, Y).
+related(X, Y) :- aunt(Y, X).
+related(X, Y) :- uncle(X, Y).
+related(X, Y) :- uncle(Y, X).
+related(X, Y) :- siblingInLaw(X, Y).
+related(X, Y) :- siblingInLaw(Y, X).
+related(X, Y) :- sibling(X, Y).
+related(X, Y) :- sibling(Y, X).
+related(X, Y) :- married(X, Y).
+related(X, Y) :- married(Y, X).
