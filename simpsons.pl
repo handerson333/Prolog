@@ -67,7 +67,10 @@ grandparent(X,Y) :- parent(X,Z),parent(Z,Y).
   % X = bart ;
   % X = maggie .
   % Define two predicates brother/2 and sister/2.
-sibling(X,Y) :- parent(Z,X),parent(Z,Y), X \= Y.  
+sibling(X,Y) :- parent(Z,X),parent(Z,Y), \+X=Y.
+sib5(X,Y) :- setof((X,Y), P^(parent(P,X),parent(P,Y), \+X=Y), Sibs),
+  member((X,Y), Sibs),
+  \+ (Y@<X, member((Y,X), Sibs)).  
 
   % ?- sister(lisa,X).
   % X = bart ;
@@ -159,3 +162,5 @@ related(X, Y) :- sibling(X, Y).
 related(X, Y) :- sibling(Y, X).
 related(X, Y) :- married(X, Y).
 related(X, Y) :- married(Y, X).
+
+
