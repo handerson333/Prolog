@@ -92,7 +92,8 @@ bloodRelative(X, Y) :-
 related(X, Y) :- bloodRelative(X, Y).
 related(X, Y) :- ancestor(X, Z), married(Z, W), bloodRelative(W, Y).
 related(X, Y) :- descendent(X, Z), married(Z, W), bloodRelative(W, Y).
-% related(X, Y) :- related(X,Z),married(Z,Y),!.
+% % relative( X , Y ) :- ancestor( Z , X ) , ancestor( Z , Y ).
+% % related(X, Y) :- related(X,Z),married(Z,Y),!.
 % related(X, Y) :- ancestor(X, Y).
 % related(X, Y) :- ancestor(Y, X).
 % % related(X, Y) :- descendent(X, Y).
@@ -109,12 +110,7 @@ related(X, Y) :- descendent(X, Z), married(Z, W), bloodRelative(W, Y).
 % related(X, Y) :- sibling(Y, X).
 % related(X, Y) :- married(X, Y).
 % related(X, Y) :- married(Y, X).
-% call bloodRelated on the married parent or child
-
-% setof(A, relative(ling, A), Relatives).
- 
-% Relatives = [mona,jackie,clancy,abe,herb,homer,marge,patty,selma,bart,lisa,maggie].
-% findall(A, relative(ling, A), R), sort(R, Relatives).
+% % call bloodRelated on the married parent or child
 
 
 % cmd/3
