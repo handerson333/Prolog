@@ -1,7 +1,5 @@
-% -- Robert Hayden Anderson
-% -- anderrob
-% -- anderrob@oregonstate.edu
-% -- cs381
+% -- Hayden Anderson
+% -- handerson333@gmail.com
 % -- summer 2018
 
 
@@ -75,12 +73,6 @@ cousin(X,Y) :- child(X,Z), sibling(Z,W), parent(W,Y).
 ancestor(X,Y) :- parent(X,Y);
                 (parent(X,Z),ancestor(Z,Y)).
                     
-
-  % Extra Credit: Define the predicate related/2. This predicate should be true for any two people connected by a family tree, no matter how distantly. Therefore, a query such as related(herb,X) should enumerate every other person in the tree.
-  
-  % The challenge in this problem is structuring your predicate in a way that enumerates all members of the tree and doesn’t infinitely loop. You may want to use a helper predicate.
-  
-  % (Note: my solution does not infinitely loop, but also never stops finding solutions. If someone can produce a better implementation, bonus bonus points!)
 descendent(X, Y) :-
       parent(Y, X).
 descendent(X, Y) :-
